@@ -160,8 +160,13 @@ export default function ResumesPage() {
               Upload Resume
             </h3>
             <p className="text-[#2C3E3C]/60 mb-6 max-w-md mx-auto">
-              Upload your resume in PDF or Markdown format. We'll parse it and make it ready for optimization.
+              Upload your resume in PDF or Markdown format. Files are stored for your records.
             </p>
+            <div className="bg-[#7A9B92]/10 border border-[#7A9B92]/20 rounded-lg p-3 mb-4 max-w-md mx-auto">
+              <p className="text-xs text-[#2C3E3C]/70">
+                💡 Tip: For best AI optimization results, use "Paste Text" instead. PDF text extraction may not work in all environments.
+              </p>
+            </div>
 
             <label className="inline-flex items-center gap-2 bg-[#2C3E3C] text-[#FDFBF7] px-8 py-4 rounded-full text-base font-medium hover:bg-[#1a2624] transition-all hover:scale-105 cursor-pointer">
               {uploading ? (
