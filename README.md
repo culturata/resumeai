@@ -13,10 +13,10 @@ An AI-powered web application that helps job seekers create ATS-compliant resume
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS
+- **Frontend**: Next.js 16 (App Router, Turbopack), TypeScript, Tailwind CSS
 - **Authentication**: Clerk
 - **Database**: PostgreSQL with Prisma ORM
-- **File Storage**: Vercel Blob Storage
+- **File Storage**: Netlify Blobs
 - **AI**: Claude API (Anthropic)
 - **Payments**: Stripe
 - **Deployment**: Netlify
@@ -27,11 +27,12 @@ An AI-powered web application that helps job seekers create ATS-compliant resume
 
 - Node.js 20 or higher
 - PostgreSQL database (Neon, Supabase, or Railway recommended)
+- Netlify CLI for local development with Blobs
 - Accounts for:
   - Clerk (authentication)
   - Stripe (payments)
   - Anthropic (Claude API)
-  - Vercel (Blob storage)
+  - Netlify (hosting and Blob storage)
 
 ### Installation
 
@@ -53,8 +54,9 @@ An AI-powered web application that helps job seekers create ATS-compliant resume
    CLERK_SECRET_KEY="your_clerk_secret_key"
    CLERK_WEBHOOK_SECRET="your_clerk_webhook_secret"
 
-   # Vercel Blob Storage
-   BLOB_READ_WRITE_TOKEN="your_vercel_blob_token"
+   # Netlify Blobs
+   # Note: Netlify Blobs work automatically when deployed
+   # For local dev, use: netlify dev
 
    # Anthropic Claude API
    ANTHROPIC_API_KEY="your_anthropic_api_key"
@@ -76,13 +78,20 @@ An AI-powered web application that helps job seekers create ATS-compliant resume
    ```
 
 4. **Run the development server**
+
+   For local development with Netlify Blobs support:
+   ```bash
+   netlify dev
+   ```
+
+   Or use regular Next.js dev (Blobs won't work locally):
    ```bash
    npm run dev
    ```
 
 5. **Open the app**
 
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [http://localhost:8888](http://localhost:8888) (netlify dev) or [http://localhost:3000](http://localhost:3000) (npm run dev)
 
 ## Configuration Guides
 
@@ -139,11 +148,16 @@ An AI-powered web application that helps job seekers create ATS-compliant resume
 3. Go to API Keys and create a new key
 4. Copy the key to `ANTHROPIC_API_KEY`
 
-### 5. Vercel Blob Storage
+### 5. Netlify Blobs
 
-1. Go to [vercel.com](https://vercel.com) and create account
-2. Create a new Blob store
-3. Copy the read/write token to `BLOB_READ_WRITE_TOKEN`
+Netlify Blobs work automatically when deployed to Netlify - no setup required!
+
+For local development:
+1. Install Netlify CLI: `npm install -g netlify-cli`
+2. Run your app with: `netlify dev`
+3. Blobs will be available at `/.netlify/blobs/serve/`
+
+No API keys or tokens needed!
 
 ## Deployment
 
