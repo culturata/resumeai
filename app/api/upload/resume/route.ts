@@ -83,23 +83,53 @@ export async function POST(req: Request) {
       const fileType: FileType =
         file.type === 'application/pdf' ? FileType.PDF : FileType.MARKDOWN;
 
-      const fileUrl = await uploadFile(file, 'resumes');
-      console.log('File uploaded to blob storage:', fileUrl);
+      let fileUrl: string;
+      try {
+        fileUrl = await uploadFile(file, 'resumes');
+        console.log('✅ File uploaded to blob storage:', fileUrl);
+      } catch (blobError) {
+        console.error('❌ Blob upload failed:', blobError);
+        throw new Error(`Blob upload failed: ${blobError instanceof Error ? blobError.message : 'Unknown error'}`);
+      }
 
-      const originalContent = await parseResume(file, fileType);
-      console.log('File parsed, content length:', originalContent.length);
+      let originalContent: string;
+      try {
+        originalContent = await parseResume(file, fileType);
+        console.log('✅ File parsed, content length:', originalContent.length);
+      } catch (parseError) {
+        console.error('❌ File parsing failed:', parseError);
+        throw new Error(`File parsing failed: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
+      }
 
-      const resume = await prisma.resume.create({
-        data: {
+      let resume;
+      try {
+        console.log('📝 Attempting to save to database...', {
           userId,
-          originalFileName: file.name,
-          originalFileUrl: fileUrl,
+          fileName: file.name,
           fileType,
-          originalContent,
-        },
-      });
+          contentLength: originalContent.length
+        });
 
-      console.log('Resume saved to database:', resume.id);
+        resume = await prisma.resume.create({
+          data: {
+            userId,
+            originalFileName: file.name,
+            originalFileUrl: fileUrl,
+            fileType,
+            originalContent,
+          },
+        });
+
+        console.log('✅ Resume saved to database:', resume.id);
+      } catch (dbError) {
+        console.error('❌ Database save failed:', dbError);
+        console.error('Database error details:', {
+          error: dbError instanceof Error ? dbError.message : 'Unknown',
+          stack: dbError instanceof Error ? dbError.stack : undefined,
+        });
+        throw new Error(`Database save failed: ${dbError instanceof Error ? dbError.message : 'Unknown error'}`);
+      }
+
       return NextResponse.json(resume);
     } catch (error) {
       console.error('Error uploading file:', error);
