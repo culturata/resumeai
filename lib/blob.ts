@@ -5,12 +5,11 @@ export async function uploadFile(file: File, folder: string = 'resumes') {
 
   const filename = `${folder}/${Date.now()}-${file.name}`;
 
-  // Convert File to Buffer for Netlify Blobs
+  // Convert File to Blob for Netlify Blobs
   const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
 
-  // Store the file
-  await store.set(filename, buffer, {
+  // Store the file (wrap in Blob for proper TypeScript typing)
+  await store.set(filename, new Blob([arrayBuffer], { type: file.type }), {
     metadata: {
       contentType: file.type,
       originalName: file.name,
